@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teo Chat — Lar Church</title>
+  <link rel="icon" type="image/png" href="images/logo.png" />
+
+  <style>
+    /* ─── DESIGN SYSTEM (LAR CHURCH) ───────────────────────────────── */
+    :root {
+      --wood-dark:    #5D4037;
+      --wood-medium:  #8D6E63;
+      --amber:        #FF8C00;
+      --amber-light:  #FFA726;
+      --gold:         #FFB74D;
+      --gold-bright:  #DAA520;
+      --orange:       #FF6F00;
+      --black-modern: #1A1A1A;
+      --black-soft:   #2D2D2D;
+      --white-warm:   #FFF8E1;
+      --cream:        #FFECB3;
+      --white:        #ffffff;
+      --sidebar-w:    280px;
+      --shadow-card:  0 10px 30px rgba(0,0,0,0.10);
+      --shadow-hover: 0 15px 40px rgba(0,0,0,0.18);
+      --transition:   0.3s ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--white-warm);
+      color: var(--black-modern);
+      line-height: 1.6;
+      overflow: hidden;
+    }
+
+    /* ─── SCROLLBAR ─────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--amber-light); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--amber); }
+
+    /* ─── LAYOUT ────────────────────────────────────────────────────── */
+    .app {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SIDEBAR — idêntica ao nav da Lar Church
+    ═══════════════════════════════════════════════════════════════ */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--wood-medium), var(--wood-dark));
+      border-right: 3px solid var(--amber);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 10;
+      transition: transform var(--transition);
+    }
+
+    /* ── Sidebar Header ── */
+    .sidebar-header {
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-img {
+      height: 46px;
+      width: auto;
+      filter: brightness(0) invert(1);
+    }
+
+    .logo-placeholder {
+      width: 46px;
+      height: 46px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+      border: 2px solid rgba(255,183,77,0.5);
+    }
+
+    .logo-brand h1 {
+      color: var(--white-warm);
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .logo-brand p {
+      color: var(--gold);
+      font-size: 0.75rem;
+      font-weight: 400;
+    }
+
+    /* ── Models Section ── */
+    .models-section {
+      padding: 18px 14px 12px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .section-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.45);
+      font-weight: 600;
+      padding: 0 6px;
+      margin-bottom: 10px;
+    }
+
+    .model-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-bottom: 6px;
+      border: 1px solid transparent;
+      transition: all var(--transition);
+      position: relative;
+    }
+
+    .model-card:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,183,77,0.3);
+    }
+
+    .model-card.active {
+      background: rgba(255,140,0,0.2);
+      border-color: var(--amber);
+      box-shadow: inset 4px 0 0 var(--amber);
+    }
+
+    .model-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      border: 1px solid rgba(255,183,77,0.2);
+      transition: all var(--transition);
+    }
+
+    .model-card.active .model-icon {
+      background: rgba(255,140,0,0.3);
+      border-color: rgba(255,140,0,0.6);
+    }
+
+    .model-info { flex: 1; min-width: 0; }
+
+    .model-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.88);
+      margin-bottom: 2px;
+      transition: color var(--transition);
+    }
+
+    .model-card.active .model-name { color: var(--gold); }
+
+    .model-desc {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.42);
+      line-height: 1.4;
+    }
+
+    .model-card.active .model-desc { color: rgba(255,183,77,0.65); }
+
+    /* Amber divider — igual ao h2::after da Lar Church */
+    .amber-divider {
+      height: 3px;
+      background: linear-gradient(90deg, var(--amber), var(--gold));
+      border-radius: 2px;
+      margin: 10px 14px;
+      opacity: 0.4;
+    }
+
+    /* ── Sidebar Footer ── */
+    .sidebar-footer {
+      padding: 14px 20px 18px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .new-chat-btn {
+      width: 100%;
+      padding: 9px 0;
+      margin-bottom: 10px;
+      background: rgba(255,140,0,0.15);
+      border: 1px solid rgba(255,140,0,0.4);
+      border-radius: 8px;
+      color: var(--gold);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      letter-spacing: 0.3px;
+    }
+    .new-chat-btn:hover {
+      background: rgba(255,140,0,0.28);
+      border-color: var(--amber);
+      color: var(--white-warm);
+    }
+
+    .church-name {
+      font-size: 0.75rem;
+      color: var(--gold);
+      text-align: center;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+
+    /* ── Mobile hamburger ── */
+    .hamburger {
+      display: none;
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      z-index: 100;
+      background: var(--wood-dark);
+      border: 2px solid var(--amber);
+      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--amber);
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       MAIN CHAT
+    ═══════════════════════════════════════════════════════════════ */
+    .chat-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--white-warm);
+      min-width: 0;
+    }
+
+    /* ── Chat Header ── */
+    .chat-header {
+      padding: 0 28px;
+      height: 66px;
+      background: linear-gradient(135deg, var(--wood-medium), var(--wood-dark));
+      border-bottom: 3px solid var(--amber);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .header-model-info { display: flex; align-items: center; gap: 12px; }
+
+    .header-model-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,183,77,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+    }
+
+    .header-model-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--white-warm);
+    }
+
+    .header-model-sub {
+      font-size: 0.72rem;
+      color: var(--gold);
+      font-weight: 400;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 50px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,183,77,0.35);
+      font-size: 0.72rem;
+      color: var(--gold);
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4caf50;
+      animation: pulse-green 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(76,175,80,0.5); }
+      50% { box-shadow: 0 0 0 4px rgba(76,175,80,0); }
+    }
+
+    /* ── Messages Area ── */
+    .messages-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 28px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+
+    /* Welcome */
+    .welcome-msg {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 40px 20px;
+      animation: fadeInUp 0.6s ease both;
+    }
+
+    .welcome-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .welcome-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--wood-dark);
+      margin-bottom: 8px;
+    }
+
+    /* Amber underline — padrão da Lar Church */
+    .welcome-title::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--amber), var(--gold));
+      margin: 10px auto 0;
+      border-radius: 2px;
+    }
+
+    .welcome-text {
+      font-size: 1rem;
+      color: var(--wood-medium);
+      max-width: 420px;
+      line-height: 1.75;
+      margin-top: 14px;
+    }
+
+    /* Verse card — estilo card-historia da Lar Church */
+    .welcome-verse {
+      margin-top: 20px;
+      max-width: 420px;
+      background: var(--white);
+      padding: 16px 20px 16px 26px;
+      border-radius: 12px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      text-align: left;
+      font-size: 0.9rem;
+      color: var(--wood-medium);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .welcome-verse::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 5px;
+      background: linear-gradient(180deg, var(--amber), var(--gold));
+      border-radius: 12px 0 0 12px;
+    }
+
+    /* ── Message rows ── */
+    .msg-row {
+      display: flex;
+      animation: fadeInUp 0.35s ease both;
+    }
+
+    .msg-row.user { justify-content: flex-end; }
+    .msg-row.ai   { justify-content: flex-start; align-items: flex-start; gap: 10px; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* AI Avatar */
+    .ai-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--wood-medium), var(--wood-dark));
+      border: 2px solid var(--amber);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .msg-col { display: flex; flex-direction: column; }
+    .msg-col.user { align-items: flex-end; }
+    .msg-col.ai   { align-items: flex-start; flex: 1; min-width: 0; }
+
+    /* Bubbles */
+    .bubble {
+      max-width: 72%;
+      padding: 13px 17px;
+      border-radius: 15px;
+      line-height: 1.65;
+      font-size: 0.9rem;
+    }
+
+    /* User bubble — botão amber da Lar Church */
+    .bubble.user {
+      background: linear-gradient(135deg, var(--amber), var(--orange));
+      color: var(--white);
+      border-radius: 15px 15px 4px 15px;
+      box-shadow: 0 8px 25px rgba(255,140,0,0.35);
+    }
+
+    /* AI bubble — card-historia da Lar Church */
+    .bubble.ai {
+      background: var(--white);
+      color: var(--black-modern);
+      border-radius: 4px 15px 15px 15px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      padding-left: 22px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .bubble.ai::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 5px;
+      background: linear-gradient(180deg, var(--amber), var(--gold));
+      border-radius: 4px 0 0 4px;
+    }
+
+    .bubble-time {
+      font-size: 0.68rem;
+      color: var(--wood-medium);
+      margin-top: 5px;
+      opacity: 0.7;
+    }
+    .msg-col.user .bubble-time { color: var(--wood-medium); }
+
+    /* AI response formatting */
+    .bubble.ai strong { color: var(--wood-dark); font-weight: 700; }
+    .bubble.ai em { color: var(--amber); font-style: italic; }
+    .bubble.ai ul, .bubble.ai ol { padding-left: 18px; margin: 6px 0; }
+    .bubble.ai li { margin: 4px 0; }
+
+    /* Bible ref — estilo split-highlight da Lar Church */
+    .bible-ref {
+      display: block;
+      margin: 8px 0;
+      padding: 8px 12px;
+      background: var(--white-warm);
+      border-left: 4px solid var(--amber);
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: var(--wood-dark);
+      font-size: 0.86rem;
+    }
+
+    /* Typing indicator */
+    .typing-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      animation: fadeInUp 0.3s ease both;
+    }
+
+    .typing-bubble {
+      background: var(--white);
+      border-radius: 4px 15px 15px 15px;
+      padding: 14px 18px 14px 22px;
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .typing-bubble::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 5px;
+      background: linear-gradient(180deg, var(--amber), var(--gold));
+      border-radius: 4px 0 0 4px;
+    }
+
+    .typing-bubble span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--amber);
+      animation: typing-bounce 1.4s ease infinite;
+    }
+    .typing-bubble span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-bubble span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing-bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+      30%  { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* ── Chat Footer ── */
+    .chat-footer {
+      padding: 14px 28px 18px;
+      background: var(--white);
+      border-top: 3px solid var(--amber);
+      flex-shrink: 0;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      background: var(--white-warm);
+      border: 2px solid rgba(255,140,0,0.25);
+      border-radius: 12px;
+      padding: 10px 12px 10px 16px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .input-wrapper:focus-within {
+      border-color: var(--amber);
+      box-shadow: 0 0 0 3px rgba(255,140,0,0.12);
+    }
+
+    #message-input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--black-modern);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      resize: none;
+      max-height: 130px;
+      min-height: 22px;
+      overflow-y: auto;
+    }
+
+    #message-input::placeholder { color: var(--wood-medium); opacity: 0.7; }
+
+    /* Botão — hero-cta da Lar Church */
+    .send-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50px;
+      background: linear-gradient(135deg, var(--amber), var(--orange));
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 6px 20px rgba(255,140,0,0.4);
+      transition: all var(--transition);
+    }
+
+    .send-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(255,140,0,0.55);
+    }
+
+    .send-btn:active { transform: translateY(0); }
+
+    .send-btn svg { fill: white; width: 17px; height: 17px; }
+
+    .input-hint {
+      text-align: center;
+      font-size: 0.68rem;
+      color: var(--wood-medium);
+      margin-top: 8px;
+      opacity: 0.6;
+    }
+
+    .input-hint kbd {
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,0.15);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: inherit;
+      font-size: 0.65rem;
+      color: var(--black-soft);
+    }
+
+    /* ─── RESPONSIVE ────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+
+      .sidebar {
+        position: fixed;
+        top: 0; left: 0; bottom: 0;
+        transform: translateX(-100%);
+        z-index: 50;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.visible { display: block; }
+
+      .chat-header { padding-left: 62px; }
+      .messages-area { padding: 20px 14px 10px; }
+      .chat-footer { padding: 12px 14px 14px; }
+      .bubble { max-width: 88%; }
+
+      .header-model-sub { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+  <div class="sidebar-overlay" id="overlay"></div>
+
+  <!-- ════════════════════════════════
+       SIDEBAR
+  ════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+      <div class="logo-row">
+        <!-- Tenta carregar logo; fallback para emoji -->
+        <img src="images/logo.png" alt="Lar Church" class="logo-img"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+        <div class="logo-placeholder" style="display:none">✝</div>
+        <div class="logo-brand">
+          <h1>Teo Chat</h1>
+          <p>Estudo Teológico com IA</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="models-section">
+      <div class="section-label">Modelos de Estudo</div>
+
+      <div class="model-card active" data-model="abc">
+        <div class="model-icon">📖</div>
+        <div class="model-info">
+          <div class="model-name">ABC</div>
+          <div class="model-desc">Análise Bíblica Completa — 10 blocos técnicos</div>
+        </div>
+      </div>
+
+      <div class="model-card" data-model="eep">
+        <div class="model-icon">📚</div>
+        <div class="model-info">
+          <div class="model-name">EEP</div>
+          <div class="model-desc">Estudo Expositivo Profundo — verso a verso</div>
+        </div>
+      </div>
+
+      <div class="model-card" data-model="emi">
+        <div class="model-icon">🧠</div>
+        <div class="model-info">
+          <div class="model-name">EMI</div>
+          <div class="model-desc">Mente do Inspirado — intenção e emoção do autor</div>
+        </div>
+      </div>
+
+      <div class="model-card" data-model="evr">
+        <div class="model-icon">🔥</div>
+        <div class="model-info">
+          <div class="model-name">EVR</div>
+          <div class="model-desc">Estudo Verso Real — devocional diário aplicado</div>
+        </div>
+      </div>
+
+      <div class="model-card" data-model="cli">
+        <div class="model-icon">🗺️</div>
+        <div class="model-info">
+          <div class="model-name">CLI</div>
+          <div class="model-desc">Contexto do Livro — mapa panorâmico em 13 blocos</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="new-chat-btn" id="new-chat-btn">+ Nova Conversa</button>
+      <div class="church-name">Lar Church — Lugar de Amor e Recomeço</div>
+    </div>
+  </aside>
+
+  <!-- ════════════════════════════════
+       MAIN CHAT
+  ════════════════════════════════ -->
+  <main class="chat-main">
+
+    <header class="chat-header">
+      <div class="header-model-info">
+        <div class="header-model-icon" id="header-icon">📖</div>
+        <div>
+          <div class="header-model-name" id="header-name">Análise Exegética</div>
+          <div class="header-model-sub">Lar Church · Estudo Teológico</div>
+        </div>
+      </div>
+      <div class="status-badge">
+        <div class="status-dot"></div>
+        Ativo
+      </div>
+    </header>
+
+    <div class="messages-area" id="messages"></div>
+
+    <footer class="chat-footer">
+      <div class="input-wrapper">
+        <textarea
+          id="message-input"
+          rows="1"
+          placeholder="Digite um versículo, passagem ou pergunta teológica..."
+        ></textarea>
+        <button class="send-btn" id="send-btn" title="Enviar">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+      <div class="input-hint">
+        <kbd>Enter</kbd> para enviar &nbsp;·&nbsp; <kbd>Shift+Enter</kbd> para nova linha
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+/* ─── MODELOS ────────────────────────────────────────────────────────── */
+const MODELS = {
+  abc: {
+    name: 'ABC — Análise Bíblica Completa',
+    shortName: 'ABC',
+    icon: '📖',
+    welcome: 'Pronto para a Análise Bíblica Completa. Digite um versículo ou perícope e receba um estudo técnico nos 10 blocos fixos: exegese, teologia sistemática, autor, destinatários, tema central, contexto histórico, palavras originais, gênero literário, cristocentrismo e contexto canônico.',
+    verse: '"Toda a Escritura é inspirada por Deus e útil para o ensino, para a repreensão, para a correção..." — 2 Tm 3:16',
+  },
+  eep: {
+    name: 'EEP — Estudo Expositivo Profundo',
+    shortName: 'EEP',
+    icon: '📚',
+    welcome: 'Pronto para o Estudo Expositivo Profundo. Envie uma perícope média ou longa — um bloco de narrativa, parágrafo ou seção inteira — e receba um estudo verso a verso pronto para ser ensinado.',
+    verse: '"Sede, porém, praticantes da Palavra, e não somente ouvintes." — Tg 1:22',
+  },
+  emi: {
+    name: 'EMI — Mente do Inspirado',
+    shortName: 'EMI',
+    icon: '🧠',
+    welcome: 'Pronto para a Exposição da Mente do Inspirado. Digite um texto com carga emocional ou em que a intenção do autor é determinante, e vamos entrar na mente, urgência e emoção do escritor bíblico.',
+    verse: '"Pois nunca qualquer profecia foi dada por vontade humana; entretanto, homens santos falaram da parte de Deus..." — 2 Pe 1:21',
+  },
+  evr: {
+    name: 'EVR — Estudo Verso Real',
+    shortName: 'EVR',
+    icon: '🔥',
+    welcome: 'Pronto para o Estudo Verso Real. Digite um versículo e receba o devocional completo no formato CENA → VERSO → VERDADE → REALIDADE → RESPOSTA. Sem atalhos — termina em ação concreta.',
+    verse: '"A Palavra de Deus é viva e eficaz, mais cortante do que qualquer espada de dois gumes..." — Hb 4:12',
+  },
+  cli: {
+    name: 'CLI — Contexto do Livro',
+    shortName: 'CLI',
+    icon: '🗺️',
+    welcome: 'Pronto para o Contexto do Livro. Digite o nome de um livro bíblico e receba o mapa panorâmico completo em 13 blocos: autor, destinatários, data, contexto histórico, problema central, erros combatidos, mensagem central, temas, palavras-chave, estrutura, versículos-chave, alertas de interpretação e aplicação macro.',
+    verse: '"A exposição das tuas palavras ilumina e dá entendimento aos simples." — Sl 119:130',
+  },
+};
+
+/* ─── ESTADO ─────────────────────────────────────────────────────────── */
+let activeModel   = 'abc';
+let history       = [];   // { role: 'user'|'assistant', content: string }
+let isLoading     = false;
+
+/* ─── DOM ────────────────────────────────────────────────────────────── */
+const messagesEl  = document.getElementById('messages');
+const inputEl     = document.getElementById('message-input');
+const sendBtn     = document.getElementById('send-btn');
+const headerName  = document.getElementById('header-name');
+const headerIcon  = document.getElementById('header-icon');
+const sidebar     = document.getElementById('sidebar');
+const overlay     = document.getElementById('overlay');
+const hamburger   = document.getElementById('hamburger');
+const newChatBtn  = document.getElementById('new-chat-btn');
+const modelCards  = document.querySelectorAll('.model-card[data-model]');
+
+/* ─── HELPERS ────────────────────────────────────────────────────────── */
+function now() {
+  return new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+function scrollBottom() {
+  requestAnimationFrame(() => { messagesEl.scrollTop = messagesEl.scrollHeight; });
+}
+function setLoading(v) {
+  isLoading = v;
+  sendBtn.disabled = v;
+  sendBtn.style.opacity = v ? '0.5' : '1';
+}
+
+/* ─── MARKDOWN SIMPLES ───────────────────────────────────────────────── */
+function renderMarkdown(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    // Blocos de código
+    .replace(/```[\s\S]*?```/g, m => `<pre><code>${m.slice(3,-3).trim()}</code></pre>`)
+    // Negrito e itálico
+    .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    // Títulos (##, ###)
+    .replace(/^### (.*$)/gm, '<h4>$1</h4>')
+    .replace(/^## (.*$)/gm, '<h3>$1</h3>')
+    .replace(/^# (.*$)/gm, '<h2>$1</h2>')
+    // Blockquote
+    .replace(/^&gt; (.*$)/gm, '<blockquote>$1</blockquote>')
+    // Linhas horizontais
+    .replace(/^---$/gm, '<hr>')
+    // Listas não-ordenadas
+    .replace(/^\- (.*$)/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
+    // Listas ordenadas
+    .replace(/^\d+\. (.*$)/gm, '<li>$1</li>')
+    // Quebras de linha
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+}
+
+/* ─── RENDER WELCOME ─────────────────────────────────────────────────── */
+function renderWelcome(key) {
+  const m = MODELS[key];
+  return `
+    <div class="welcome-msg" id="welcome">
+      <div class="welcome-icon">${m.icon}</div>
+      <div class="welcome-title">${m.shortName}</div>
+      <div class="welcome-text">${m.welcome}</div>
+      <div class="welcome-verse">${m.verse}</div>
+    </div>`;
+}
+
+/* ─── MENSAGEM DO USUÁRIO ────────────────────────────────────────────── */
+function addUserMsg(text) {
+  const el = document.createElement('div');
+  el.className = 'msg-row user';
+  el.innerHTML = `
+    <div class="msg-col user">
+      <div class="bubble user">${text.replace(/\n/g,'<br>')}</div>
+      <div class="bubble-time">${now()}</div>
+    </div>`;
+  messagesEl.appendChild(el);
+  scrollBottom();
+}
+
+/* ─── TYPING INDICATOR ───────────────────────────────────────────────── */
+function addTyping() {
+  const el = document.createElement('div');
+  el.className = 'typing-row';
+  el.id = 'typing';
+  el.innerHTML = `
+    <div class="ai-avatar">${MODELS[activeModel].icon}</div>
+    <div class="typing-bubble"><span></span><span></span><span></span></div>`;
+  messagesEl.appendChild(el);
+  scrollBottom();
+}
+function removeTyping() {
+  document.getElementById('typing')?.remove();
+}
+
+/* ─── CRIA BUBBLE DA IA (vazia, para streaming) ──────────────────────── */
+function createAIBubble() {
+  const row = document.createElement('div');
+  row.className = 'msg-row ai';
+  row.innerHTML = `
+    <div class="ai-avatar">${MODELS[activeModel].icon}</div>
+    <div class="msg-col ai">
+      <div class="bubble ai" id="streaming-bubble"></div>
+      <div class="bubble-time" id="streaming-time"></div>
+    </div>`;
+  messagesEl.appendChild(row);
+  scrollBottom();
+  return document.getElementById('streaming-bubble');
+}
+
+/* ─── ENVIAR MENSAGEM ────────────────────────────────────────────────── */
+async function sendMessage() {
+  const text = inputEl.value.trim();
+  if (!text || isLoading) return;
+
+  document.getElementById('welcome')?.remove();
+
+  inputEl.value = '';
+  inputEl.style.height = 'auto';
+
+  // Adiciona ao histórico e exibe
+  history.push({ role: 'user', content: text });
+  addUserMsg(text);
+  addTyping();
+  setLoading(true);
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: activeModel, messages: history }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+
+    removeTyping();
+    const bubble = createAIBubble();
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    let rawMarkdown = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n');
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (data === '[DONE]') break;
+
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.error) throw new Error(parsed.error);
+          if (parsed.content) {
+            rawMarkdown += parsed.content;
+            bubble.innerHTML = renderMarkdown(rawMarkdown);
+            scrollBottom();
+          }
+        } catch (e) {
+          if (e.message && !e.message.includes('JSON')) throw e;
+        }
+      }
+    }
+
+    // Finaliza: salva resposta no histórico
+    fullText = rawMarkdown;
+    history.push({ role: 'assistant', content: fullText });
+    document.getElementById('streaming-time').textContent = now();
+    document.getElementById('streaming-bubble').removeAttribute('id');
+    document.getElementById('streaming-time').removeAttribute('id');
+
+  } catch (err) {
+    removeTyping();
+    const errRow = document.createElement('div');
+    errRow.className = 'msg-row ai';
+    errRow.innerHTML = `
+      <div class="ai-avatar">⚠️</div>
+      <div class="msg-col ai">
+        <div class="bubble ai" style="color:#c0392b; border-left-color:#e74c3c;">
+          <strong>Erro ao processar:</strong> ${err.message}
+        </div>
+      </div>`;
+    messagesEl.appendChild(errRow);
+    scrollBottom();
+  } finally {
+    setLoading(false);
+    inputEl.focus();
+  }
+}
+
+/* ─── NOVA CONVERSA ──────────────────────────────────────────────────── */
+function newChat() {
+  history = [];
+  messagesEl.innerHTML = renderWelcome(activeModel);
+  inputEl.value = '';
+  inputEl.style.height = 'auto';
+  inputEl.focus();
+  closeSidebar();
+}
+
+/* ─── TROCA DE MODELO ────────────────────────────────────────────────── */
+modelCards.forEach(card => {
+  card.addEventListener('click', () => {
+    const key = card.dataset.model;
+    if (key === activeModel) { closeSidebar(); return; }
+
+    modelCards.forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    activeModel = key;
+
+    headerName.textContent = MODELS[key].shortName;
+    headerIcon.textContent = MODELS[key].icon;
+
+    newChat();
+  });
+});
+
+/* ─── AUTO-RESIZE TEXTAREA ───────────────────────────────────────────── */
+inputEl.addEventListener('input', () => {
+  inputEl.style.height = 'auto';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 130) + 'px';
+});
+
+/* ─── TECLADO ────────────────────────────────────────────────────────── */
+inputEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+sendBtn.addEventListener('click', sendMessage);
+newChatBtn.addEventListener('click', newChat);
+
+/* ─── MOBILE SIDEBAR ─────────────────────────────────────────────────── */
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('visible');
+}
+hamburger.addEventListener('click', () => {
+  sidebar.classList.add('open');
+  overlay.classList.add('visible');
+});
+overlay.addEventListener('click', closeSidebar);
+
+/* ─── INIT ───────────────────────────────────────────────────────────── */
+messagesEl.innerHTML = renderWelcome(activeModel);
+inputEl.focus();
+</script>
+</body>
+</html>
