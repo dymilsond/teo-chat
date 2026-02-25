@@ -1,7 +1,9 @@
 import { NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import PROMPTS from '@/lib/prompts'
-import { ModelKey, Message } from '@/types'
+import { MODELS } from '@/lib/models'
+import { checkRateLimit, incrementUsage } from '@/lib/rate-limit'
+import { ModelKey, Message, Plan } from '@/types'
 
 export async function POST(req: NextRequest) {
   try {
@@ -35,13 +37,44 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: 'Não autenticado.' }, { status: 401 })
     }
 
+    // Buscar plano do usuário
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('plan')
+      .eq('id', user.id)
+      .single()
+
+    const userPlan: Plan = (profile?.plan as Plan) ?? 'free'
+
+    // Bloquear modelos Pro para usuários Free
+    const modelMeta = MODELS[model]
+    if (modelMeta.plan === 'pro' && userPlan === 'free') {
+      return Response.json(
+        { error: 'pro_required', message: 'Este modelo requer o plano Pro.' },
+        { status: 403 }
+      )
+    }
+
+    // Verificar rate limit (só para free)
+    const { allowed, current, limit } = await checkRateLimit(user.id, userPlan)
+    if (!allowed) {
+      return Response.json(
+        {
+          error: 'rate_limit',
+          message: `Limite mensal atingido (${current}/${limit}). Faça upgrade para Pro.`,
+          current,
+          limit,
+        },
+        { status: 429 }
+      )
+    }
+
     // Criar ou reutilizar conversa
     let actualConversationId: string = conversationId ?? ''
 
     const lastUserMsg = messages[messages.length - 1]?.content ?? ''
 
     if (!actualConversationId.length) {
-      // Gerar título a partir da primeira mensagem
       const title =
         lastUserMsg.length > 60
           ? lastUserMsg.slice(0, 57).trimEnd() + '...'
@@ -60,7 +93,6 @@ export async function POST(req: NextRequest) {
 
       actualConversationId = newConv.id
     } else {
-      // Atualiza updated_at
       await supabase
         .from('conversations')
         .update({ updated_at: new Date().toISOString() })
@@ -75,6 +107,11 @@ export async function POST(req: NextRequest) {
       role: userMsg.role,
       content: userMsg.content,
     })
+
+    // Incrementar contador de uso (somente free)
+    if (userPlan === 'free') {
+      await incrementUsage(user.id)
+    }
 
     // Montar mensagens para OpenAI
     const apiMessages = [
@@ -103,7 +140,7 @@ export async function POST(req: NextRequest) {
     }
 
     const encoder = new TextEncoder()
-    const convId = actualConversationId // captura para closure
+    const convId = actualConversationId
 
     const stream = new ReadableStream({
       async start(controller) {
@@ -165,6 +202,8 @@ export async function POST(req: NextRequest) {
         Connection: 'keep-alive',
         'X-Accel-Buffering': 'no',
         'X-Conversation-Id': actualConversationId,
+        'X-Usage-Current': String(current + 1),
+        'X-Usage-Limit': String(limit),
       },
     })
   } catch (err) {

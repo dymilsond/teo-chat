@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { ModelKey } from '@/types'
 import { MODELS } from '@/lib/models'
 import ChatArea from '@/components/chat/ChatArea'
@@ -13,10 +13,14 @@ function ChatPage() {
   const modelParam = searchParams.get('model') as ModelKey | null
   const model: ModelKey = modelParam && MODELS[modelParam] ? modelParam : 'abc'
 
+  // Reconciliação no carregamento do chat — cobre aba antiga aberta
+  // e casos onde o usuário voltou após pagamento sem webhook ainda.
+  useEffect(() => {
+    fetch('/api/payment/sync', { method: 'POST' }).catch(() => {})
+  }, [])
+
   function handleConversationCreated(id: string) {
-    // Atualiza a URL sem causar re-render (sem navegar)
     window.history.replaceState(null, '', `/chat/${id}`)
-    // Refresca a lista de conversas na sidebar
     refreshConversations()
   }
 

@@ -1,9 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import { ModelKey, UserProfile, Conversation } from '@/types'
 import ModelList from './ModelList'
 import ConversationList from './ConversationList'
 import UserMenu from './UserMenu'
+import UsageCounter from '@/components/ui/UsageCounter'
+import UpgradeModal from '@/components/ui/UpgradeModal'
 
 interface Props {
   activeModel: ModelKey
@@ -26,6 +29,10 @@ export default function Sidebar({
   conversations,
   conversationsLoading,
 }: Props) {
+  const [showUpgrade, setShowUpgrade] = useState(false)
+
+  const userPlan = profile?.plan ?? 'free'
+
   return (
     <>
       {/* Overlay mobile */}
@@ -85,6 +92,8 @@ export default function Sidebar({
                 onModelSelect(key)
                 onClose()
               }}
+              userPlan={userPlan}
+              onUpgradeNeeded={() => setShowUpgrade(true)}
             />
           </div>
 
@@ -153,6 +162,9 @@ export default function Sidebar({
             + Nova Conversa
           </button>
 
+          {/* Contador de uso (só aparece para plano free) */}
+          <UsageCounter />
+
           {profile && (
             <div className="mt-2">
               <UserMenu profile={profile} />
@@ -164,6 +176,14 @@ export default function Sidebar({
           </p>
         </div>
       </aside>
+
+      {/* Modal de upgrade */}
+      {showUpgrade && (
+        <UpgradeModal
+          reason="pro_model"
+          onClose={() => setShowUpgrade(false)}
+        />
+      )}
     </>
   )
 }

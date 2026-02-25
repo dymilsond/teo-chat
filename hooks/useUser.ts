@@ -26,7 +26,27 @@ export function useUser() {
         .single()
 
       if (data) {
-        setProfile(data as UserProfile)
+        const p = data as UserProfile
+        setProfile(p)
+
+        // Reconciliação silenciosa: se há assinatura pendente/ativa,
+        // verifica estado real no MP para cobrir webhooks perdidos.
+        const status = p.mp_subscription_status
+        if (
+          p.mp_preapproval_id &&
+          status !== 'none' &&
+          status !== 'cancelled' &&
+          status != null
+        ) {
+          fetch('/api/payment/sync', { method: 'POST' })
+            .then((r) => r.json())
+            .then((res) => {
+              if (res.synced && res.plan && res.plan !== p.plan) {
+                setProfile((prev) => prev ? { ...prev, plan: res.plan } : prev)
+              }
+            })
+            .catch(() => {})
+        }
       }
 
       setLoading(false)
@@ -34,7 +54,6 @@ export function useUser() {
 
     fetchProfile()
 
-    // Escuta mudanças de auth (login/logout)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event) => {
         if (event === 'SIGNED_OUT') {

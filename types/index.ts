@@ -35,6 +35,8 @@ export interface UserProfile {
   avatar_url: string | null
   plan: Plan
   stripe_customer_id: string | null
+  mp_preapproval_id: string | null
+  mp_subscription_status: 'none' | 'pending' | 'authorized' | 'paused' | 'cancelled' | null
 }
 
 export interface UsageInfo {
