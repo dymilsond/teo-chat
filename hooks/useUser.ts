@@ -29,15 +29,10 @@ export function useUser() {
         const p = data as UserProfile
         setProfile(p)
 
-        // Reconciliação silenciosa: se há assinatura pendente/ativa,
-        // verifica estado real no MP para cobrir webhooks perdidos.
-        const status = p.mp_subscription_status
-        if (
-          p.mp_preapproval_id &&
-          status !== 'none' &&
-          status !== 'cancelled' &&
-          status != null
-        ) {
+        // Reconciliação silenciosa: verifica estado real no MP para cobrir
+        // webhooks perdidos. Roda para qualquer usuário não-Pro (o endpoint
+        // não faz chamada desnecessária à API MP se não houver preapproval).
+        if (p.plan !== 'pro' && p.mp_subscription_status !== 'cancelled') {
           fetch('/api/payment/sync', { method: 'POST' })
             .then((r) => r.json())
             .then((res) => {
