@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ModelKey } from '@/types'
 import Sidebar from '@/components/sidebar/Sidebar'
@@ -13,6 +13,15 @@ function AppShell({ children }: { children: React.ReactNode }) {
   const [activeModel, setActiveModel] = useState<ModelKey>('abc')
   const { profile } = useUser()
   const { conversations, loading: convLoading } = useConversations()
+
+  // Escuta o evento disparado pelo botão hamburger em qualquer página
+  useEffect(() => {
+    function handleSidebarOpen() {
+      setSidebarOpen(true)
+    }
+    window.addEventListener('sidebar-open', handleSidebarOpen)
+    return () => window.removeEventListener('sidebar-open', handleSidebarOpen)
+  }, [])
 
   function handleModelSelect(key: ModelKey) {
     setActiveModel(key)

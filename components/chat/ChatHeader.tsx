@@ -4,10 +4,16 @@ import { ModelMeta } from '@/types'
 
 interface Props {
   model: ModelMeta
-  onMenuOpen?: () => void
+  onMenuOpen?: () => void // mantido por compatibilidade, mas não é mais necessário
 }
 
 export default function ChatHeader({ model, onMenuOpen }: Props) {
+  function handleMenuClick() {
+    // Dispara evento global que o AppShell (layout) escuta
+    window.dispatchEvent(new CustomEvent('sidebar-open'))
+    onMenuOpen?.()
+  }
+
   return (
     <header
       className="flex items-center justify-between flex-shrink-0 px-7"
@@ -22,8 +28,8 @@ export default function ChatHeader({ model, onMenuOpen }: Props) {
         {/* Hamburger — só mobile */}
         <button
           className="md:hidden w-9 h-9 rounded-lg flex items-center justify-center text-lg mr-1"
-          style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--amber)', border: 'none' }}
-          onClick={onMenuOpen}
+          style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--amber)', border: 'none', cursor: 'pointer' }}
+          onClick={handleMenuClick}
           aria-label="Menu"
         >
           ☰
