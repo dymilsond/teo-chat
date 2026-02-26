@@ -13,12 +13,22 @@ export default function UsageCounter() {
   const [usage, setUsage] = useState<UsageData | null>(null)
 
   useEffect(() => {
+    // Carga inicial
     fetch('/api/user/usage')
       .then((r) => r.json())
       .then((data) => {
         if (!data.error) setUsage(data)
       })
       .catch(() => {})
+
+    // Atualiza em tempo real quando uma mensagem é enviada
+    function onUsageUpdated(e: Event) {
+      const { current, limit } = (e as CustomEvent<{ current: number; limit: number }>).detail
+      setUsage((prev) => (prev ? { ...prev, current, limit } : prev))
+    }
+
+    window.addEventListener('usage-updated', onUsageUpdated)
+    return () => window.removeEventListener('usage-updated', onUsageUpdated)
   }, [])
 
   if (!usage || usage.plan === 'pro') return null

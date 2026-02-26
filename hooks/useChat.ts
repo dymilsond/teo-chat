@@ -76,6 +76,20 @@ export function useChat({
           currentConvIdRef.current = serverConvId
         }
 
+        // Notifica o UsageCounter sobre o novo contador de uso
+        const usageCurrent = res.headers.get('X-Usage-Current')
+        const usageLimit = res.headers.get('X-Usage-Limit')
+        if (usageCurrent && usageLimit) {
+          window.dispatchEvent(
+            new CustomEvent('usage-updated', {
+              detail: {
+                current: parseInt(usageCurrent, 10),
+                limit: parseInt(usageLimit, 10),
+              },
+            })
+          )
+        }
+
         const reader = res.body!.getReader()
         const decoder = new TextDecoder()
         let fullText = ''
