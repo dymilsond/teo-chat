@@ -42,6 +42,39 @@ export function useUser() {
             })
             .catch(() => {})
         }
+      } else {
+        // Perfil não existe — cria automaticamente.
+        // Isso acontece quando o usuário faz login pela primeira vez via Google OAuth.
+        const { data: created } = await supabase
+          .from('profiles')
+          .upsert(
+            {
+              id: user.id,
+              email: user.email ?? '',
+              full_name: user.user_metadata?.full_name ?? null,
+              avatar_url: user.user_metadata?.avatar_url ?? null,
+              plan: 'free',
+              mp_subscription_status: 'none',
+            },
+            { onConflict: 'id' }
+          )
+          .select()
+          .single()
+
+        if (created) {
+          setProfile(created as UserProfile)
+
+          // Tenta recuperar plano Pro pelo e-mail (caso o usuário já pagou
+          // mas o ID mudou por ser uma conta Google nova).
+          fetch('/api/payment/sync', { method: 'POST' })
+            .then((r) => r.json())
+            .then((res) => {
+              if (res.synced && res.plan === 'pro') {
+                setProfile((prev) => prev ? { ...prev, plan: 'pro' } : prev)
+              }
+            })
+            .catch(() => {})
+        }
       }
 
       setLoading(false)

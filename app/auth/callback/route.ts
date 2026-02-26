@@ -31,6 +31,23 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error) {
+      // Garante que existe uma linha em profiles para este usuário.
+      // Essencial para login via Google OAuth (novo usuário ou conta vinculada).
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        await supabase.from('profiles').upsert(
+          {
+            id: user.id,
+            email: user.email ?? '',
+            full_name: user.user_metadata?.full_name ?? null,
+            avatar_url: user.user_metadata?.avatar_url ?? null,
+            plan: 'free',
+            mp_subscription_status: 'none',
+          },
+          { onConflict: 'id', ignoreDuplicates: true }
+        )
+      }
+
       const forwardedHost = request.headers.get('x-forwarded-host')
       const isLocalEnv = process.env.NODE_ENV === 'development'
 
