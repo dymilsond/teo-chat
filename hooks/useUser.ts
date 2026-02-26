@@ -56,7 +56,7 @@ export function useUser() {
               plan: 'free',
               mp_subscription_status: 'none',
             },
-            { onConflict: 'id' }
+            { onConflict: 'id', ignoreDuplicates: true }
           )
           .select()
           .single()
