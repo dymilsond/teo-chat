@@ -10,7 +10,9 @@ export interface ModelMeta {
   desc: string
   welcome: string
   verse: string
-  plan: Plan // plano mínimo necessário
+  verseRef: string
+  blocks: string[]  // chips exibidos na welcome screen
+  plan: Plan        // plano mínimo necessário
 }
 
 export interface Message {

@@ -2,7 +2,6 @@
 
 import { ModelKey, Plan } from '@/types'
 import { MODEL_LIST } from '@/lib/models'
-import LockIcon from '@/components/ui/LockIcon'
 
 interface Props {
   activeModel: ModelKey
@@ -11,105 +10,75 @@ interface Props {
   onUpgradeNeeded: () => void
 }
 
+const BADGE_STYLES: Record<string, { bg: string; color: string; border: string }> = {
+  abc: { bg: '#E8580C', color: '#fff', border: '#E8580C' },
+  eep: { bg: '#F5EDE8', color: '#C8886A', border: '#EDD8CC' },
+  emi: { bg: '#F5EDE8', color: '#C8886A', border: '#EDD8CC' },
+  evr: { bg: '#F5EDE8', color: '#C8886A', border: '#EDD8CC' },
+  cli: { bg: '#F5EDE8', color: '#C8886A', border: '#EDD8CC' },
+}
+
 export default function ModelList({ activeModel, onSelect, userPlan, onUpgradeNeeded }: Props) {
   return (
-    <div className="flex-1 overflow-y-auto" style={{ padding: '18px 14px 12px' }}>
-      <div
-        className="text-xs uppercase tracking-widest font-semibold mb-2.5 px-1.5"
-        style={{ color: 'rgba(255,255,255,0.45)' }}
-      >
-        Modelos de Estudo
-      </div>
-
+    <div style={{ padding: '0 6px' }}>
       {MODEL_LIST.map((m) => {
         const isActive = m.key === activeModel
         const isLocked = m.plan === 'pro' && userPlan === 'free'
+        const badge = BADGE_STYLES[m.key] ?? BADGE_STYLES.eep
 
         function handleClick() {
-          if (isLocked) {
-            onUpgradeNeeded()
-          } else {
-            onSelect(m.key)
-          }
+          if (isLocked) onUpgradeNeeded()
+          else onSelect(m.key)
         }
 
         return (
           <button
             key={m.key}
             onClick={handleClick}
-            className="w-full flex items-start gap-3 px-3.5 py-3 rounded-xl mb-1.5 text-left transition-all relative"
+            className="w-full flex items-center gap-2.5 text-left relative transition-all"
             style={{
-              background: isActive ? 'rgba(255,140,0,0.2)' : 'transparent',
-              border: isActive ? '1px solid var(--amber)' : '1px solid transparent',
-              boxShadow: isActive ? 'inset 4px 0 0 var(--amber)' : 'none',
-              cursor: 'pointer',
-              opacity: isLocked ? 0.7 : 1,
+              padding: '7px 10px', margin: '1px 0', borderRadius: 8,
+              background: isActive ? '#fff' : 'transparent',
+              boxShadow: isActive ? '0 1px 4px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)' : 'none',
+              border: 'none', cursor: 'pointer',
+              opacity: isLocked ? 0.75 : 1,
             }}
-            onMouseEnter={(e) => {
-              if (!isActive) {
-                const el = e.currentTarget
-                el.style.background = 'rgba(255,255,255,0.1)'
-                el.style.borderColor = 'rgba(255,183,77,0.3)'
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isActive) {
-                const el = e.currentTarget
-                el.style.background = 'transparent'
-                el.style.borderColor = 'transparent'
-              }
-            }}
+            onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = '#E6E9F0' }}
+            onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent' }}
           >
+            {/* Badge do modelo */}
             <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-base flex-shrink-0 transition-all"
+              className="flex items-center justify-center flex-shrink-0"
               style={{
-                background: isActive ? 'rgba(255,140,0,0.3)' : 'rgba(255,255,255,0.12)',
-                border: isActive ? '1px solid rgba(255,140,0,0.6)' : '1px solid rgba(255,183,77,0.2)',
+                width: 31, height: 31, borderRadius: 7,
+                background: isActive ? '#E8580C' : badge.bg,
+                color: isActive ? '#fff' : badge.color,
+                border: `1px solid ${isActive ? '#E8580C' : badge.border}`,
+                fontFamily: "'Fraunces', serif",
+                fontSize: 9, fontWeight: 700, letterSpacing: '-0.3px',
               }}
             >
-              {m.icon}
+              {m.shortName}
             </div>
+
+            {/* Info */}
             <div className="flex-1 min-w-0">
-              <div
-                className="text-sm font-semibold mb-0.5 transition-colors flex items-center gap-1.5"
-                style={{ color: isActive ? 'var(--gold)' : 'rgba(255,255,255,0.88)' }}
-              >
+              <div style={{ fontSize: 12, fontWeight: 600, color: isActive ? '#1a1a1a' : '#6B6E7A', lineHeight: 1.3 }}>
                 {m.shortName}
-                {isLocked && (
-                  <span style={{ color: 'rgba(255,183,77,0.6)', display: 'flex', alignItems: 'center' }}>
-                    <LockIcon size={11} />
-                  </span>
-                )}
               </div>
-              <div
-                className="text-xs leading-snug"
-                style={{ color: isActive ? 'rgba(255,183,77,0.65)' : 'rgba(255,255,255,0.42)' }}
-              >
+              <div style={{ fontSize: 10, color: '#A8ACBA', marginTop: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {m.desc}
               </div>
             </div>
 
-            {/* Badge Pro */}
+            {/* Tag PRO */}
             {m.plan === 'pro' && (
-              <span
-                style={{
-                  position: 'absolute',
-                  top: 8,
-                  right: 10,
-                  fontSize: 9,
-                  fontWeight: 700,
-                  padding: '1px 5px',
-                  borderRadius: 4,
-                  background: isLocked
-                    ? 'rgba(255,183,77,0.15)'
-                    : 'linear-gradient(135deg, #FFB74D, #FF8C00)',
-                  color: isLocked ? 'rgba(255,183,77,0.7)' : '#fff',
-                  border: isLocked ? '1px solid rgba(255,183,77,0.3)' : 'none',
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Pro
+              <span style={{
+                fontSize: 9, fontWeight: 700, padding: '2px 5px', borderRadius: 4,
+                color: '#E8580C', background: '#FEF0E8', border: '1px solid #F9C9A8',
+                flexShrink: 0,
+              }}>
+                PRO
               </span>
             )}
           </button>

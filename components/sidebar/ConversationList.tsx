@@ -1,8 +1,8 @@
 'use client'
 
+import { useState, useMemo } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { Conversation } from '@/types'
-import { MODELS } from '@/lib/models'
 
 interface Props {
   conversations: Conversation[]
@@ -38,124 +38,123 @@ function groupByDate(conversations: Conversation[]) {
 export default function ConversationList({ conversations, loading }: Props) {
   const router = useRouter()
   const pathname = usePathname()
+  const [search, setSearch] = useState('')
 
-  if (loading) {
-    return (
-      <div
-        style={{
-          padding: '12px 18px',
-          color: 'rgba(255,255,255,0.4)',
-          fontSize: 12,
-          fontStyle: 'italic',
-        }}
-      >
-        Carregando...
-      </div>
+  const filtered = useMemo(() => {
+    if (!search.trim()) return conversations
+    return conversations.filter((c) =>
+      c.title.toLowerCase().includes(search.toLowerCase())
     )
-  }
+  }, [conversations, search])
 
-  if (conversations.length === 0) {
-    return (
-      <div
-        style={{
-          padding: '12px 18px',
-          color: 'rgba(255,255,255,0.4)',
-          fontSize: 12,
-          fontStyle: 'italic',
-        }}
-      >
-        Nenhuma conversa ainda
-      </div>
-    )
-  }
-
-  const groups = groupByDate(conversations)
+  const groups = useMemo(() => groupByDate(filtered), [filtered])
 
   return (
-    <div
-      className="overflow-y-auto"
-      style={{ flex: 1, paddingBottom: 8 }}
-    >
-      {groups.map((group) => (
-        <div key={group.label}>
-          {/* Label do grupo */}
-          <div
+    <div className="flex flex-col" style={{ flex: 1, minHeight: 0 }}>
+      {/* Search */}
+      <div style={{ padding: '0 8px 6px' }}>
+        <div
+          style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            background: '#fff', border: '1px solid #E0E3EC',
+            borderRadius: 8, padding: '5px 10px',
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#A8ACBA" strokeWidth="2.5" style={{ flexShrink: 0 }}>
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Buscar no histórico..."
             style={{
-              padding: '10px 18px 4px',
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'rgba(255,183,77,0.65)',
+              flex: 1, border: 'none', outline: 'none',
+              fontSize: 11, color: '#4A4E5A',
+              background: 'transparent', fontFamily: 'inherit',
             }}
-          >
-            {group.label}
+          />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#A8ACBA', padding: 0, lineHeight: 1 }}
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* List */}
+      <div className="overflow-y-auto" style={{ flex: 1, paddingBottom: 8 }}>
+        {loading ? (
+          <div style={{ padding: '10px 16px', fontSize: 11, color: '#A8ACBA', fontStyle: 'italic' }}>
+            Carregando...
           </div>
-
-          {group.items.map((conv) => {
-            const isActive = pathname === `/chat/${conv.id}`
-            const modelMeta = MODELS[conv.model]
-
-            return (
-              <button
-                key={conv.id}
-                onClick={() => router.push(`/chat/${conv.id}`)}
-                title={conv.title}
+        ) : filtered.length === 0 ? (
+          <div style={{ padding: '10px 16px', fontSize: 11, color: '#A8ACBA', fontStyle: 'italic' }}>
+            {search ? 'Nenhum resultado' : 'Nenhuma conversa ainda'}
+          </div>
+        ) : (
+          groups.map((group) => (
+            <div key={group.label}>
+              <div
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 7,
-                  width: '100%',
-                  textAlign: 'left',
-                  padding: '6px 18px 6px 14px',
-                  fontSize: 12.5,
-                  lineHeight: 1.35,
-                  background: isActive ? 'rgba(255,140,0,0.18)' : 'transparent',
-                  borderTop: 'none',
-                  borderRight: 'none',
-                  borderBottom: 'none',
-                  borderLeft: isActive
-                    ? '2px solid var(--amber)'
-                    : '2px solid transparent',
-                  color: isActive ? 'var(--white-warm)' : 'rgba(255,255,255,0.7)',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s',
-                  outline: 'none',
-                  fontFamily: 'inherit',
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.07)'
-                    e.currentTarget.style.color = 'var(--white-warm)'
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.background = 'transparent'
-                    e.currentTarget.style.color = 'rgba(255,255,255,0.7)'
-                  }
+                  padding: '8px 16px 3px',
+                  fontSize: 9, fontWeight: 700,
+                  letterSpacing: '1.2px',
+                  textTransform: 'uppercase' as const,
+                  color: '#C0C4D0',
                 }}
               >
-                {/* Ícone do modelo */}
-                <span style={{ fontSize: 13, flexShrink: 0 }}>
-                  {modelMeta?.icon ?? '💬'}
-                </span>
-                {/* Título truncado */}
-                <span
-                  style={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    flex: 1,
-                  }}
-                >
-                  {conv.title}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-      ))}
+                {group.label}
+              </div>
+
+              {group.items.map((conv) => {
+                const isActive = pathname === `/chat/${conv.id}`
+                return (
+                  <button
+                    key={conv.id}
+                    onClick={() => router.push(`/chat/${conv.id}`)}
+                    title={conv.title}
+                    className="flex items-center gap-2 text-left transition-all"
+                    style={{
+                      padding: '6px 10px 6px 12px',
+                      margin: '1px 6px',
+                      width: 'calc(100% - 12px)',
+                      borderRadius: 7,
+                      background: isActive ? '#fff' : 'transparent',
+                      boxShadow: isActive ? '0 1px 4px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)' : 'none',
+                      border: 'none', cursor: 'pointer', outline: 'none',
+                      fontFamily: 'inherit',
+                    }}
+                    onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = '#E6E9F0' }}
+                    onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent' }}
+                  >
+                    <svg
+                      width="12" height="12" viewBox="0 0 24 24" fill="none"
+                      stroke={isActive ? '#E8580C' : '#A8ACBA'} strokeWidth="2"
+                      style={{ flexShrink: 0 }}
+                    >
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <span
+                      style={{
+                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1,
+                        fontSize: 11.5,
+                        fontWeight: isActive ? 600 : 400,
+                        color: isActive ? '#1a1a1a' : '#6B6E7A',
+                      }}
+                    >
+                      {conv.title}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          ))
+        )}
+      </div>
     </div>
   )
 }

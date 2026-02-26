@@ -46,7 +46,12 @@ export default function ChatArea({
         className="flex-1 overflow-y-auto flex flex-col gap-4"
         style={{ padding: '28px 28px 12px', scrollBehavior: 'smooth' }}
       >
-        {messages.length === 0 && <WelcomeScreen model={modelMeta} />}
+        {messages.length === 0 && (
+          <WelcomeScreen
+            model={modelMeta}
+            onChipClick={(chip) => setInput(chip)}
+          />
+        )}
 
         {messages.map((msg, i) => (
           <MessageBubble key={i} message={msg} modelIcon={modelMeta.icon} />

@@ -16,9 +16,7 @@ export default function UsageCounter() {
     // Carga inicial
     fetch('/api/user/usage')
       .then((r) => r.json())
-      .then((data) => {
-        if (!data.error) setUsage(data)
-      })
+      .then((data) => { if (!data.error) setUsage(data) })
       .catch(() => {})
 
     // Atualiza em tempo real quando uma mensagem é enviada
@@ -37,52 +35,33 @@ export default function UsageCounter() {
   const isNearLimit = usage.current >= usage.limit - 2
   const isAtLimit = usage.current >= usage.limit
 
-  const barColor = isAtLimit
-    ? '#ef4444'
-    : isNearLimit
-    ? '#f97316'
-    : 'var(--amber)'
+  const barColor = isAtLimit ? '#ef4444' : isNearLimit ? '#f97316' : '#E8580C'
 
   return (
     <div
       style={{
-        padding: '8px 12px',
-        background: 'rgba(0,0,0,0.2)',
-        borderRadius: 10,
+        padding: '8px 10px',
+        background: '#fff',
+        border: `1px solid ${isAtLimit ? 'rgba(239,68,68,0.3)' : '#E0E3EC'}`,
+        borderRadius: 9,
         marginBottom: 8,
-        border: isAtLimit ? '1px solid rgba(239,68,68,0.4)' : '1px solid rgba(255,255,255,0.08)',
       }}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 5,
-        }}
-      >
-        <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.55)', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+        <span style={{ fontSize: 10, color: '#A8ACBA', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
           Mensagens este mês
         </span>
-        <span
-          style={{
-            fontSize: 11,
-            fontWeight: 700,
-            color: isAtLimit ? '#ef4444' : isNearLimit ? '#f97316' : 'var(--gold)',
-          }}
-        >
+        <span style={{ fontSize: 11, fontWeight: 700, color: isAtLimit ? '#ef4444' : isNearLimit ? '#f97316' : '#E8580C' }}>
           {usage.current}/{usage.limit}
         </span>
       </div>
 
       {/* Barra de progresso */}
-      <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: 99, height: 4, overflow: 'hidden' }}>
+      <div style={{ background: '#F0F2F7', borderRadius: 99, height: 4, overflow: 'hidden' }}>
         <div
           style={{
-            height: '100%',
-            width: `${pct}%`,
-            background: barColor,
-            borderRadius: 99,
+            height: '100%', width: `${pct}%`,
+            background: barColor, borderRadius: 99,
             transition: 'width 0.4s ease',
           }}
         />

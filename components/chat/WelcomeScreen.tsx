@@ -4,49 +4,119 @@ import { ModelMeta } from '@/types'
 
 interface Props {
   model: ModelMeta
+  onChipClick?: (chip: string) => void
 }
 
-export default function WelcomeScreen({ model }: Props) {
+export default function WelcomeScreen({ model, onChipClick }: Props) {
   return (
     <div
-      className="flex flex-col items-center text-center px-5 py-10 animate-fade-up"
-      style={{ animation: 'fadeInUp 0.6s ease both' }}
+      className="flex flex-col items-center text-center px-6 py-10"
+      style={{ animation: 'fadeInUp 0.5s ease both' }}
     >
-      <div className="text-5xl mb-4">{model.icon}</div>
-
-      <h2
-        className="text-2xl font-bold mb-2 relative inline-block"
-        style={{ color: 'var(--wood-dark)' }}
+      {/* Ícone do modelo */}
+      <div
+        className="flex items-center justify-center"
+        style={{
+          width: 64, height: 64, borderRadius: 16,
+          background: 'linear-gradient(135deg, #FEF0E8, #FDDCC8)',
+          border: '2px solid #F9C9A8',
+          fontSize: 28, marginBottom: 20,
+        }}
       >
-        {model.shortName}
-        <span
-          className="block h-1 rounded-full mt-2 mx-auto"
-          style={{
-            width: '80px',
-            background: 'linear-gradient(90deg, var(--amber), var(--gold))',
-          }}
-        />
+        {model.icon}
+      </div>
+
+      {/* Nome do modelo */}
+      <h2
+        style={{
+          fontFamily: "'Fraunces', serif",
+          fontSize: 26, fontWeight: 700, color: '#1a1a1a',
+          letterSpacing: '-0.5px', lineHeight: 1.2, marginBottom: 4,
+        }}
+      >
+        {model.name}
       </h2>
 
-      <p className="text-base mt-3 max-w-md leading-7" style={{ color: 'var(--wood-medium)' }}>
+      {/* Sublinhado laranja */}
+      <div
+        style={{
+          width: 40, height: 3, borderRadius: 99,
+          background: 'linear-gradient(90deg, #E8580C, #F97316)',
+          margin: '8px auto 16px',
+        }}
+      />
+
+      {/* Descrição */}
+      <p style={{ fontSize: 14, color: '#6B6E7A', maxWidth: 420, lineHeight: 1.7, marginBottom: 20 }}>
         {model.welcome}
       </p>
 
+      {/* Chips de temas */}
+      {model.blocks && model.blocks.length > 0 && (
+        <div
+          className="flex flex-wrap justify-center gap-2"
+          style={{ maxWidth: 480, marginBottom: 24 }}
+        >
+          {model.blocks.map((block) => (
+            <button
+              key={block}
+              onClick={() => onChipClick?.(block)}
+              style={{
+                padding: '5px 13px',
+                borderRadius: 99,
+                background: '#fff',
+                border: '1px solid #E0E3EC',
+                fontSize: 12, color: '#6B6E7A',
+                cursor: onChipClick ? 'pointer' : 'default',
+                transition: 'all 0.15s',
+                fontFamily: 'inherit',
+              }}
+              onMouseEnter={(e) => {
+                if (onChipClick) {
+                  e.currentTarget.style.background = '#FEF0E8'
+                  e.currentTarget.style.borderColor = '#F9C9A8'
+                  e.currentTarget.style.color = '#E8580C'
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#fff'
+                e.currentTarget.style.borderColor = '#E0E3EC'
+                e.currentTarget.style.color = '#6B6E7A'
+              }}
+            >
+              {block}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Versículo */}
       <div
-        className="mt-5 max-w-md w-full text-left text-sm italic leading-relaxed relative pl-6"
+        className="text-left relative"
         style={{
-          background: 'var(--white)',
-          padding: '16px 20px 16px 26px',
-          borderRadius: '12px',
-          boxShadow: 'var(--shadow-card)',
-          color: 'var(--wood-medium)',
+          maxWidth: 400, width: '100%',
+          background: '#fff',
+          border: '1px solid #E0E3EC',
+          borderRadius: 12,
+          padding: '14px 18px 14px 24px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
         }}
       >
-        <span
-          className="absolute top-0 left-0 bottom-0 w-1.5 rounded-l-xl"
-          style={{ background: 'linear-gradient(180deg, var(--amber), var(--gold))' }}
+        <div
+          style={{
+            position: 'absolute', left: 0, top: 0, bottom: 0, width: 4,
+            borderRadius: '12px 0 0 12px',
+            background: 'linear-gradient(180deg, #E8580C, #F97316)',
+          }}
         />
-        {model.verse}
+        <p style={{ fontSize: 13, fontStyle: 'italic', color: '#4A4E5A', lineHeight: 1.6, marginBottom: 6 }}>
+          {model.verse}
+        </p>
+        {model.verseRef && (
+          <p style={{ fontSize: 11, color: '#A8ACBA', fontWeight: 600 }}>
+            {model.verseRef}
+          </p>
+        )}
       </div>
     </div>
   )

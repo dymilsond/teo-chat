@@ -30,7 +30,6 @@ export default function Sidebar({
   conversationsLoading,
 }: Props) {
   const [showUpgrade, setShowUpgrade] = useState(false)
-
   const userPlan = profile?.plan ?? 'free'
 
   return (
@@ -38,7 +37,7 @@ export default function Sidebar({
       {/* Overlay mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 bg-black/40 z-40 md:hidden"
           onClick={onClose}
         />
       )}
@@ -51,138 +50,93 @@ export default function Sidebar({
         `}
         style={{
           width: 'var(--sidebar-w)',
-          background: 'linear-gradient(135deg, var(--wood-medium), var(--wood-dark))',
-          borderRight: '3px solid var(--amber)',
-          boxShadow: '4px 0 20px rgba(0,0,0,0.2)',
+          background: 'var(--sidebar-bg)',
+          borderRight: '1px solid var(--sidebar-border)',
         }}
       >
-        {/* Header */}
+        {/* Logo */}
         <div
-          className="flex-shrink-0"
-          style={{ padding: '24px 20px 20px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}
+          className="flex-shrink-0 flex items-center gap-2.5"
+          style={{ padding: '18px 16px 14px', borderBottom: '1px solid var(--sidebar-border)' }}
         >
-          <div className="flex items-center gap-3">
-            <div
-              className="w-11 h-11 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
-              style={{
-                background: 'rgba(255,255,255,0.15)',
-                border: '2px solid rgba(255,183,77,0.5)',
-              }}
-            >
-              ✝
-            </div>
-            <div>
-              <h1 className="font-bold text-lg leading-tight" style={{ color: 'var(--white-warm)' }}>
-                Teo Chat
-              </h1>
-              <p className="text-xs" style={{ color: 'var(--gold)' }}>
-                Estudo Teológico com IA
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Área de conteúdo rolável */}
-        <div className="flex flex-col overflow-hidden" style={{ flex: 1 }}>
-          {/* Lista de modelos */}
-          <div className="flex-shrink-0">
-            <ModelList
-              activeModel={activeModel}
-              onSelect={(key) => {
-                onModelSelect(key)
-                onClose()
-              }}
-              userPlan={userPlan}
-              onUpgradeNeeded={() => setShowUpgrade(true)}
-            />
-          </div>
-
-          {/* Divisor */}
           <div
-            className="mx-3.5 flex-shrink-0"
+            className="flex items-center justify-center flex-shrink-0"
             style={{
-              height: 1,
-              background: 'linear-gradient(90deg, transparent, rgba(255,183,77,0.4), transparent)',
-              margin: '4px 14px 0',
-            }}
-          />
-
-          {/* Label histórico */}
-          <div
-            className="flex-shrink-0"
-            style={{
-              padding: '10px 18px 2px',
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: 'rgba(255,183,77,0.65)',
+              width: 33, height: 33, background: 'var(--accent)',
+              borderRadius: 9, boxShadow: '0 2px 8px rgba(232,88,12,0.32)',
             }}
           >
-            Histórico
+            {/* Cruz simples */}
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="white">
+              <rect x="8.5" y="2" width="3" height="16" rx="1"/>
+              <rect x="2" y="7" width="16" height="3" rx="1"/>
+            </svg>
           </div>
-
-          {/* Lista de conversas — ocupa o espaço restante */}
-          <ConversationList
-            conversations={conversations}
-            loading={conversationsLoading}
-          />
+          <div>
+            <div style={{ fontFamily: "'Fraunces', serif", fontSize: 16, fontWeight: 600, color: '#1a1a1a', letterSpacing: '-0.3px', lineHeight: 1 }}>
+              Teo Chat
+            </div>
+            <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 3 }}>
+              Estudo Teológico com IA
+            </div>
+          </div>
         </div>
+
+        {/* Seção modelos */}
+        <div style={{ padding: '14px 16px 5px', fontSize: 9, fontWeight: 700, letterSpacing: '1.4px', textTransform: 'uppercase' as const, color: '#B0B4C2' }}>
+          Modelos de Estudo
+        </div>
+
+        <ModelList
+          activeModel={activeModel}
+          onSelect={(key) => { onModelSelect(key); onClose() }}
+          userPlan={userPlan}
+          onUpgradeNeeded={() => setShowUpgrade(true)}
+        />
+
+        {/* Nova Conversa */}
+        <div style={{ padding: '4px 8px 0' }}>
+          <button
+            onClick={() => { onNewChat(); onClose() }}
+            className="w-full flex items-center justify-center gap-1.5 transition-all"
+            style={{
+              padding: '7px 12px', borderRadius: 7,
+              border: '1px dashed #C8CCD8', fontSize: 11, fontWeight: 500,
+              color: '#A8ACBA', background: 'transparent', cursor: 'pointer',
+            }}
+            onMouseEnter={(e) => { const el = e.currentTarget; el.style.background = '#E6E9F0'; el.style.color = '#6B6E7A'; el.style.borderColor = '#B8BCC8' }}
+            onMouseLeave={(e) => { const el = e.currentTarget; el.style.background = 'transparent'; el.style.color = '#A8ACBA'; el.style.borderColor = '#C8CCD8' }}
+          >
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Nova Conversa
+          </button>
+        </div>
+
+        {/* Divisor */}
+        <div style={{ height: 1, background: 'var(--sidebar-border)', margin: '10px 16px' }} />
+
+        {/* Histórico */}
+        <div style={{ padding: '0 16px 6px', fontSize: 9, fontWeight: 700, letterSpacing: '1.4px', textTransform: 'uppercase' as const, color: '#4A4E5A' }}>
+          Histórico
+        </div>
+
+        {/* Lista de conversas com scroll */}
+        <ConversationList conversations={conversations} loading={conversationsLoading} />
 
         {/* Footer */}
         <div
           className="flex-shrink-0"
-          style={{ padding: '14px 20px 18px', borderTop: '1px solid rgba(255,255,255,0.08)' }}
+          style={{ padding: '10px 10px 12px', borderTop: '1px solid var(--sidebar-border)' }}
         >
-          <button
-            onClick={() => {
-              onNewChat()
-              onClose()
-            }}
-            className="w-full py-2 mb-2.5 rounded-lg text-sm font-semibold tracking-tight transition-all"
-            style={{
-              background: 'rgba(255,140,0,0.15)',
-              border: '1px solid rgba(255,140,0,0.4)',
-              color: 'var(--gold)',
-              cursor: 'pointer',
-            }}
-            onMouseEnter={(e) => {
-              const el = e.currentTarget
-              el.style.background = 'rgba(255,140,0,0.28)'
-              el.style.borderColor = 'var(--amber)'
-              el.style.color = 'var(--white-warm)'
-            }}
-            onMouseLeave={(e) => {
-              const el = e.currentTarget
-              el.style.background = 'rgba(255,140,0,0.15)'
-              el.style.borderColor = 'rgba(255,140,0,0.4)'
-              el.style.color = 'var(--gold)'
-            }}
-          >
-            + Nova Conversa
-          </button>
-
-          {/* Contador de uso (só aparece para plano free) */}
-          <UsageCounter />
-
-          {profile && (
-            <div className="mt-2">
-              <UserMenu profile={profile} />
-            </div>
-          )}
-
-          <p className="text-xs text-center font-medium opacity-80 mt-2" style={{ color: 'var(--gold)' }}>
-            Lar Church — Lugar de Amor e Recomeço
-          </p>
+          {userPlan === 'free' && <UsageCounter />}
+          {profile && <UserMenu profile={profile} />}
         </div>
       </aside>
 
-      {/* Modal de upgrade */}
       {showUpgrade && (
-        <UpgradeModal
-          reason="pro_model"
-          onClose={() => setShowUpgrade(false)}
-        />
+        <UpgradeModal reason="pro_model" onClose={() => setShowUpgrade(false)} />
       )}
     </>
   )

@@ -27,30 +27,34 @@ export default function ChatInput({ value, onChange, onSend, disabled }: Props) 
     }
   }
 
+  const canSend = !disabled && !!value.trim()
+
   return (
     <footer
       className="flex-shrink-0"
       style={{
-        padding: '14px 28px 18px',
-        background: 'var(--white)',
-        borderTop: '3px solid var(--amber)',
-        boxShadow: '0 -4px 20px rgba(0,0,0,0.06)',
+        padding: '12px 20px 16px',
+        background: '#EEF0F5',
+        borderTop: '1px solid #E0E3EC',
       }}
     >
       <div
-        className="flex items-end gap-2.5 rounded-xl px-4 py-2.5 transition-all"
         style={{
-          background: 'var(--white-warm)',
-          border: '2px solid rgba(255,140,0,0.25)',
+          display: 'flex', alignItems: 'flex-end', gap: 10,
+          background: '#fff',
+          border: '1.5px solid #E0E3EC',
+          borderRadius: 14,
+          padding: '8px 8px 8px 16px',
+          transition: 'border-color 0.15s, box-shadow 0.15s',
         }}
-        onFocus={(e) => {
+        onFocusCapture={(e) => {
           const el = e.currentTarget as HTMLDivElement
-          el.style.borderColor = 'var(--amber)'
-          el.style.boxShadow = '0 0 0 3px rgba(255,140,0,0.12)'
+          el.style.borderColor = '#E8580C'
+          el.style.boxShadow = '0 0 0 3px rgba(232,88,12,0.10)'
         }}
-        onBlur={(e) => {
+        onBlurCapture={(e) => {
           const el = e.currentTarget as HTMLDivElement
-          el.style.borderColor = 'rgba(255,140,0,0.25)'
+          el.style.borderColor = '#E0E3EC'
           el.style.boxShadow = 'none'
         }}
       >
@@ -62,49 +66,47 @@ export default function ChatInput({ value, onChange, onSend, disabled }: Props) 
           rows={1}
           placeholder="Digite um versículo, passagem ou pergunta teológica..."
           disabled={disabled}
-          className="flex-1 bg-transparent border-none outline-none text-sm leading-relaxed resize-none overflow-y-auto"
+          className="flex-1 bg-transparent border-none outline-none resize-none overflow-y-auto"
           style={{
-            minHeight: '22px',
-            maxHeight: '130px',
-            color: 'var(--black-modern)',
-            fontFamily: 'inherit',
+            minHeight: 24, maxHeight: 130,
+            fontSize: 13.5, lineHeight: 1.6,
+            color: '#1a1a1a', fontFamily: 'inherit',
           }}
         />
 
         <button
           onClick={onSend}
-          disabled={disabled || !value.trim()}
-          className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
+          disabled={!canSend}
+          className="flex items-center justify-center flex-shrink-0 transition-all"
           style={{
-            background: 'linear-gradient(135deg, var(--amber), var(--orange))',
+            width: 38, height: 38, borderRadius: 10,
+            background: canSend ? '#E8580C' : '#E0E3EC',
             border: 'none',
-            boxShadow: '0 6px 20px rgba(255,140,0,0.4)',
-            opacity: disabled || !value.trim() ? 0.5 : 1,
-            cursor: disabled || !value.trim() ? 'not-allowed' : 'pointer',
+            cursor: canSend ? 'pointer' : 'not-allowed',
+            boxShadow: canSend ? '0 4px 12px rgba(232,88,12,0.35)' : 'none',
+            transition: 'all 0.15s',
           }}
           onMouseEnter={(e) => {
-            if (!disabled && value.trim()) {
-              const el = e.currentTarget
-              el.style.transform = 'translateY(-2px)'
-              el.style.boxShadow = '0 10px 28px rgba(255,140,0,0.55)'
+            if (canSend) {
+              e.currentTarget.style.transform = 'translateY(-1px)'
+              e.currentTarget.style.boxShadow = '0 6px 18px rgba(232,88,12,0.45)'
             }
           }}
           onMouseLeave={(e) => {
-            const el = e.currentTarget
-            el.style.transform = 'translateY(0)'
-            el.style.boxShadow = '0 6px 20px rgba(255,140,0,0.4)'
+            e.currentTarget.style.transform = 'translateY(0)'
+            e.currentTarget.style.boxShadow = canSend ? '0 4px 12px rgba(232,88,12,0.35)' : 'none'
           }}
         >
-          <svg viewBox="0 0 24 24" fill="white" width="17" height="17">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+          <svg viewBox="0 0 24 24" fill={canSend ? 'white' : '#A8ACBA'} width="15" height="15">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
           </svg>
         </button>
       </div>
 
-      <p className="text-center mt-2 opacity-60" style={{ fontSize: '0.68rem', color: 'var(--wood-medium)' }}>
-        <kbd className="px-1.5 py-0.5 rounded text-xs" style={{ background: 'var(--white)', border: '1px solid rgba(0,0,0,0.15)', color: 'var(--black-soft)', fontFamily: 'inherit' }}>Enter</kbd>
+      <p style={{ textAlign: 'center', marginTop: 8, fontSize: 10.5, color: '#B0B4C2' }}>
+        <kbd style={{ padding: '1px 5px', borderRadius: 4, background: '#fff', border: '1px solid #E0E3EC', color: '#6B6E7A', fontFamily: 'inherit', fontSize: 10 }}>Enter</kbd>
         {' '}para enviar &nbsp;·&nbsp;{' '}
-        <kbd className="px-1.5 py-0.5 rounded text-xs" style={{ background: 'var(--white)', border: '1px solid rgba(0,0,0,0.15)', color: 'var(--black-soft)', fontFamily: 'inherit' }}>Shift+Enter</kbd>
+        <kbd style={{ padding: '1px 5px', borderRadius: 4, background: '#fff', border: '1px solid #E0E3EC', color: '#6B6E7A', fontFamily: 'inherit', fontSize: 10 }}>Shift+Enter</kbd>
         {' '}para nova linha
       </p>
     </footer>

@@ -4,67 +4,89 @@ import { ModelMeta } from '@/types'
 
 interface Props {
   model: ModelMeta
-  onMenuOpen?: () => void // mantido por compatibilidade, mas não é mais necessário
+  onMenuOpen?: () => void
 }
 
 export default function ChatHeader({ model, onMenuOpen }: Props) {
   function handleMenuClick() {
-    // Dispara evento global que o AppShell (layout) escuta
     window.dispatchEvent(new CustomEvent('sidebar-open'))
     onMenuOpen?.()
   }
 
   return (
     <header
-      className="flex items-center justify-between flex-shrink-0 px-7"
+      className="flex items-center justify-between flex-shrink-0"
       style={{
-        height: '66px',
-        background: 'linear-gradient(135deg, var(--wood-medium), var(--wood-dark))',
-        borderBottom: '3px solid var(--amber)',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+        height: 60,
+        padding: '0 20px',
+        background: '#fff',
+        borderBottom: '1px solid #E0E3EC',
+        boxShadow: '0 1px 8px rgba(0,0,0,0.05)',
       }}
     >
       <div className="flex items-center gap-3">
         {/* Hamburger — só mobile */}
         <button
-          className="md:hidden w-9 h-9 rounded-lg flex items-center justify-center text-lg mr-1"
-          style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--amber)', border: 'none', cursor: 'pointer' }}
+          className="md:hidden w-8 h-8 rounded-lg flex items-center justify-center"
+          style={{
+            background: '#F5F6FA', border: '1px solid #E0E3EC',
+            color: '#6B6E7A', cursor: 'pointer', flexShrink: 0,
+          }}
           onClick={handleMenuClick}
           aria-label="Menu"
         >
-          ☰
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
         </button>
 
+        {/* Badge do modelo */}
         <div
-          className="w-9 h-9 rounded-lg flex items-center justify-center text-base flex-shrink-0"
+          className="flex items-center justify-center flex-shrink-0"
           style={{
-            background: 'rgba(255,255,255,0.15)',
-            border: '1px solid rgba(255,183,77,0.4)',
+            width: 36, height: 36, borderRadius: 9,
+            background: 'linear-gradient(135deg, #E8580C, #F97316)',
+            color: '#fff',
+            fontFamily: "'Fraunces', serif",
+            fontSize: 10, fontWeight: 700, letterSpacing: '-0.3px',
+            boxShadow: '0 2px 8px rgba(232,88,12,0.3)',
           }}
         >
-          {model.icon}
+          {model.shortName}
         </div>
+
+        {/* Nome + subtítulo */}
         <div>
-          <div className="font-bold text-base" style={{ color: 'var(--white-warm)' }}>
+          <div style={{
+            fontFamily: "'Fraunces', serif",
+            fontSize: 15, fontWeight: 600, color: '#1a1a1a',
+            letterSpacing: '-0.3px', lineHeight: 1.2,
+          }}>
             {model.name}
           </div>
-          <div className="text-xs hidden sm:block" style={{ color: 'var(--gold)' }}>
+          <div style={{ fontSize: 10, color: '#A8ACBA', marginTop: 1 }}>
             Lar Church · Estudo Teológico
           </div>
         </div>
       </div>
 
+      {/* Status */}
       <div
-        className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-wide"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
         style={{
-          background: 'rgba(255,255,255,0.12)',
-          border: '1px solid rgba(255,183,77,0.35)',
-          color: 'var(--gold)',
+          background: '#F5F6FA',
+          border: '1px solid #E0E3EC',
+          fontSize: 11, fontWeight: 600, color: '#6B6E7A',
         }}
       >
         <span
-          className="w-1.5 h-1.5 rounded-full"
-          style={{ background: '#4caf50', animation: 'pulse-green 2s ease-in-out infinite' }}
+          style={{
+            width: 6, height: 6, borderRadius: '50%',
+            background: '#4caf50', display: 'inline-block',
+            animation: 'pulse-green 2s ease-in-out infinite',
+          }}
         />
         Ativo
       </div>
