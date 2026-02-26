@@ -22,6 +22,8 @@ export default function ChatHeader({ model, onMenuOpen }: Props) {
         background: '#fff',
         borderBottom: '1px solid #E0E3EC',
         boxShadow: '0 1px 8px rgba(0,0,0,0.05)',
+        position: 'relative',
+        zIndex: 10,
       }}
     >
       <div className="flex items-center gap-3">
