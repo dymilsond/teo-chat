@@ -50,7 +50,7 @@ export function useUser() {
     const supabase = createClient()
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event) => {
+    } = supabase.auth.onAuthStateChange(async (event: string) => {
       if (event === 'SIGNED_OUT') {
         setProfile(null)
         setLoading(false)
