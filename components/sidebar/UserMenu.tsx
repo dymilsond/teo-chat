@@ -87,7 +87,7 @@ export default function UserMenu({ profile }: UserMenuProps) {
               <div className="user-menu-divider" />
             </>
           )}
-          <button className="user-menu-item" onClick={() => setOpen(false)}>
+          <button className="user-menu-item" onClick={() => { router.push('/profile'); setOpen(false) }}>
             👤 Minha conta
           </button>
           <div className="user-menu-divider" />
