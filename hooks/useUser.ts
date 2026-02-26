@@ -83,7 +83,7 @@ export function useUser() {
     fetchProfile()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event) => {
+      async (event: string) => {
         if (event === 'SIGNED_OUT') {
           setProfile(null)
         } else if (event === 'SIGNED_IN') {
