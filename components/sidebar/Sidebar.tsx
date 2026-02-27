@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { ModelKey, UserProfile, Conversation } from '@/types'
 import ModelList from './ModelList'
 import ConversationList from './ConversationList'
@@ -31,6 +32,7 @@ export default function Sidebar({
 }: Props) {
   const [showUpgrade, setShowUpgrade] = useState(false)
   const userPlan = profile?.plan ?? 'free'
+  const router = useRouter()
 
   return (
     <>
@@ -134,6 +136,35 @@ export default function Sidebar({
           style={{ padding: '10px 10px 12px', borderTop: '1px solid var(--sidebar-border)' }}
         >
           {userPlan === 'free' && <UsageCounter />}
+
+          {/* Como usar */}
+          <button
+            onClick={() => { router.push('/welcome'); onClose() }}
+            className="w-full flex items-center gap-2 transition-all"
+            style={{
+              padding: '7px 10px',
+              borderRadius: 8,
+              border: 'none',
+              background: 'transparent',
+              cursor: 'pointer',
+              marginBottom: 6,
+              color: '#A8ACBA',
+              fontSize: 11,
+              fontWeight: 500,
+              fontFamily: 'inherit',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#E6E9F0'; e.currentTarget.style.color = '#6B6E7A' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#A8ACBA' }}
+          >
+            <span style={{
+              width: 18, height: 18, borderRadius: '50%',
+              border: '1.5px solid currentColor',
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 10, fontWeight: 700, flexShrink: 0,
+            }}>?</span>
+            Como usar o Teo Chat
+          </button>
+
           {profile && <UserMenu profile={profile} />}
         </div>
       </aside>
