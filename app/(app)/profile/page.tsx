@@ -109,7 +109,7 @@ export default function ProfilePage() {
 
         {/* ── Informações da conta ── */}
         <div style={cardStyle}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             {/* Avatar */}
             <div
               style={{
@@ -136,33 +136,34 @@ export default function ProfilePage() {
               ) : initials}
             </div>
 
-            {/* Name + email */}
+            {/* Name + badge + email */}
             <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontWeight: 700, fontSize: '1rem', color: '#1A1A1A', margin: 0 }}>
-                {displayName}
-              </p>
-              <p style={{ fontSize: '0.85rem', color: '#888', margin: '3px 0 0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <p style={{ fontWeight: 700, fontSize: '1rem', color: '#1A1A1A', margin: 0 }}>
+                  {displayName}
+                </p>
+                {/* Plan badge */}
+                <span
+                  style={{
+                    padding: '3px 12px',
+                    borderRadius: 99,
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.02em',
+                    background: isPro
+                      ? 'linear-gradient(135deg, #FFB74D, #FF8C00)'
+                      : '#f0f0f0',
+                    color: isPro ? '#fff' : '#999',
+                    flexShrink: 0,
+                  }}
+                >
+                  {isPro ? '⭐ Pro' : 'Grátis'}
+                </span>
+              </div>
+              <p style={{ fontSize: '0.85rem', color: '#888', margin: '3px 0 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {profile.email}
               </p>
             </div>
-
-            {/* Plan badge */}
-            <span
-              style={{
-                padding: '5px 14px',
-                borderRadius: 99,
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                letterSpacing: '0.02em',
-                background: isPro
-                  ? 'linear-gradient(135deg, #FFB74D, #FF8C00)'
-                  : '#f0f0f0',
-                color: isPro ? '#fff' : '#999',
-                flexShrink: 0,
-              }}
-            >
-              {isPro ? '⭐ Pro' : 'Grátis'}
-            </span>
           </div>
         </div>
 
