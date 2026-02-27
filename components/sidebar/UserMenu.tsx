@@ -148,6 +148,21 @@ export default function UserMenu({ profile }: UserMenuProps) {
             👤 Minha conta
           </button>
 
+          <button
+            onClick={() => { router.push('/welcome'); setOpen(false) }}
+            className="w-full text-left"
+            style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              padding: '10px 14px', fontSize: 12,
+              color: '#4A4E5A', border: 'none', background: 'transparent', cursor: 'pointer',
+              fontFamily: 'inherit',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#F5F6FA' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+          >
+            ❓ Como usar
+          </button>
+
           <div style={{ height: 1, background: '#F0F2F7' }} />
 
           <button
