@@ -104,11 +104,11 @@ export default function Sidebar({
             className="w-full flex items-center justify-center gap-1.5 transition-all"
             style={{
               padding: '7px 12px', borderRadius: 7,
-              border: '1px dashed #C8CCD8', fontSize: 11, fontWeight: 500,
-              color: '#A8ACBA', background: 'transparent', cursor: 'pointer',
+              border: '1px dashed #B0B4C2', fontSize: 11, fontWeight: 600,
+              color: '#5A5E6B', background: 'transparent', cursor: 'pointer',
             }}
-            onMouseEnter={(e) => { const el = e.currentTarget; el.style.background = '#E6E9F0'; el.style.color = '#6B6E7A'; el.style.borderColor = '#B8BCC8' }}
-            onMouseLeave={(e) => { const el = e.currentTarget; el.style.background = 'transparent'; el.style.color = '#A8ACBA'; el.style.borderColor = '#C8CCD8' }}
+            onMouseEnter={(e) => { const el = e.currentTarget; el.style.background = '#E6E9F0'; el.style.color = '#1a1a1a'; el.style.borderColor = '#9096A6' }}
+            onMouseLeave={(e) => { const el = e.currentTarget; el.style.background = 'transparent'; el.style.color = '#5A5E6B'; el.style.borderColor = '#B0B4C2' }}
           >
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
@@ -148,13 +148,13 @@ export default function Sidebar({
               background: 'transparent',
               cursor: 'pointer',
               marginBottom: 6,
-              color: '#A8ACBA',
+              color: '#5A5E6B',
               fontSize: 11,
-              fontWeight: 500,
+              fontWeight: 600,
               fontFamily: 'inherit',
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = '#E6E9F0'; e.currentTarget.style.color = '#6B6E7A' }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#A8ACBA' }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#E6E9F0'; e.currentTarget.style.color = '#1a1a1a' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#5A5E6B' }}
           >
             <span style={{
               width: 18, height: 18, borderRadius: '50%',

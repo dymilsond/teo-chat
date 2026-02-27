@@ -12,10 +12,10 @@ interface Props {
 
 const BADGE_STYLES: Record<string, { bg: string; color: string; border: string }> = {
   abc: { bg: '#E8580C', color: '#fff', border: '#E8580C' },
-  eep: { bg: '#F5EDE8', color: '#C8886A', border: '#EDD8CC' },
-  emi: { bg: '#F5EDE8', color: '#C8886A', border: '#EDD8CC' },
-  evr: { bg: '#F5EDE8', color: '#C8886A', border: '#EDD8CC' },
-  cli: { bg: '#F5EDE8', color: '#C8886A', border: '#EDD8CC' },
+  eep: { bg: '#FDEBD5', color: '#B05C20', border: '#F5C99A' },
+  emi: { bg: '#FDEBD5', color: '#B05C20', border: '#F5C99A' },
+  evr: { bg: '#FDEBD5', color: '#B05C20', border: '#F5C99A' },
+  cli: { bg: '#FDEBD5', color: '#B05C20', border: '#F5C99A' },
 }
 
 export default function ModelList({ activeModel, onSelect, userPlan, onUpgradeNeeded }: Props) {
@@ -41,7 +41,7 @@ export default function ModelList({ activeModel, onSelect, userPlan, onUpgradeNe
               background: isActive ? '#fff' : 'transparent',
               boxShadow: isActive ? '0 1px 4px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)' : 'none',
               border: 'none', cursor: 'pointer',
-              opacity: isLocked ? 0.75 : 1,
+              opacity: 1,
             }}
             onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = '#E6E9F0' }}
             onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent' }}
@@ -63,7 +63,7 @@ export default function ModelList({ activeModel, onSelect, userPlan, onUpgradeNe
 
             {/* Info */}
             <div className="flex-1 min-w-0">
-              <div style={{ fontSize: 12, fontWeight: 600, color: isActive ? '#1a1a1a' : '#6B6E7A', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: isActive ? '#1a1a1a' : '#3E4250', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {m.name}
               </div>
             </div>
