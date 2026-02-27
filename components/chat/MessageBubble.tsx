@@ -27,7 +27,7 @@ function renderMarkdown(text: string): string {
       const rows = m.trim().split('\n')
       if (rows.length > 1) {
         const header = rows[0].replace(/<td>/g, '<th>').replace(/<\/td>/g, '</th>')
-        const body = rows.slice(2).join('\n') // skip separator row
+        const body = rows.slice(2).join('\n')
         return `<table><thead>${header}</thead><tbody>${body}</tbody></table>`
       }
       return `<table><tbody>${m}</tbody></table>`
@@ -50,21 +50,24 @@ export default function MessageBubble({ message, modelIcon }: Props) {
   if (isUser) {
     return (
       <div className="flex justify-end animate-fade-up">
-        <div className="flex flex-col items-end">
+        <div className="flex flex-col items-end" style={{ maxWidth: '72%' }}>
           <div
-            className="max-w-[72%] px-4 py-3 text-sm leading-relaxed"
             style={{
-              background: 'linear-gradient(135deg, var(--amber), var(--orange))',
-              color: 'var(--white)',
-              borderRadius: '15px 15px 4px 15px',
-              boxShadow: '0 8px 25px rgba(255,140,0,0.35)',
+              background: '#E8580C',
+              color: '#fff',
+              borderRadius: '16px 16px 4px 16px',
+              padding: '10px 14px',
+              fontSize: 13.5,
+              lineHeight: 1.6,
+              boxShadow: '0 2px 12px rgba(232,88,12,0.25)',
+              wordBreak: 'break-word',
             }}
           >
-            {message.content.split('\n').map((line, i) => (
-              <span key={i}>{line}{i < message.content.split('\n').length - 1 && <br />}</span>
+            {message.content.split('\n').map((line, i, arr) => (
+              <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
             ))}
           </div>
-          <span className="text-xs mt-1 opacity-60" style={{ color: 'var(--wood-medium)' }}>
+          <span style={{ fontSize: 10, marginTop: 4, color: '#A8ACBA' }}>
             {formatTime(message.created_at)}
           </span>
         </div>
@@ -74,30 +77,37 @@ export default function MessageBubble({ message, modelIcon }: Props) {
 
   return (
     <div className="flex items-start gap-2.5 animate-fade-up">
+      {/* Avatar do modelo */}
       <div
-        className="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0 mt-0.5 border-2"
+        className="flex items-center justify-center flex-shrink-0"
         style={{
-          background: 'linear-gradient(135deg, var(--wood-medium), var(--wood-dark))',
-          borderColor: 'var(--amber)',
+          width: 32, height: 32, borderRadius: 9,
+          background: 'linear-gradient(135deg, #E8580C, #F97316)',
+          fontSize: 15, marginTop: 2,
+          boxShadow: '0 2px 8px rgba(232,88,12,0.2)',
         }}
       >
         {modelIcon || '✝'}
       </div>
+
+      {/* Bubble da resposta */}
       <div className="flex flex-col items-start flex-1 min-w-0">
         <div
-          className="prose-chat w-full text-sm leading-relaxed relative pl-5"
+          className="prose-chat w-full"
           style={{
-            background: 'var(--white)',
-            color: 'var(--black-modern)',
-            borderRadius: '4px 15px 15px 15px',
-            boxShadow: 'var(--shadow-card)',
-            padding: '13px 17px 13px 22px',
-            border: '1px solid rgba(0,0,0,0.05)',
+            background: '#fff',
+            border: '1px solid #E0E3EC',
+            borderRadius: '4px 16px 16px 16px',
+            padding: '12px 16px',
+            fontSize: 13.5,
+            lineHeight: 1.7,
+            color: '#1a1a1a',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+            wordBreak: 'break-word',
           }}
           dangerouslySetInnerHTML={{ __html: `<p>${renderMarkdown(message.content)}</p>` }}
-        >
-        </div>
-        <span className="text-xs mt-1 opacity-60" style={{ color: 'var(--wood-medium)' }}>
+        />
+        <span style={{ fontSize: 10, marginTop: 4, color: '#A8ACBA' }}>
           {formatTime(message.created_at)}
         </span>
       </div>
