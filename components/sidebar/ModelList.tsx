@@ -63,11 +63,8 @@ export default function ModelList({ activeModel, onSelect, userPlan, onUpgradeNe
 
             {/* Info */}
             <div className="flex-1 min-w-0">
-              <div style={{ fontSize: 12, fontWeight: 600, color: isActive ? '#1a1a1a' : '#6B6E7A', lineHeight: 1.3 }}>
-                {m.shortName}
-              </div>
-              <div style={{ fontSize: 10, color: '#A8ACBA', marginTop: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {m.desc}
+              <div style={{ fontSize: 12, fontWeight: 600, color: isActive ? '#1a1a1a' : '#6B6E7A', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {m.name}
               </div>
             </div>
 
