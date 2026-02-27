@@ -14,6 +14,13 @@ function AppShell({ children }: { children: React.ReactNode }) {
   const { profile } = useUser()
   const { conversations, loading: convLoading } = useConversations()
 
+  // Abre sidebar automaticamente no primeiro load se for mobile
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setSidebarOpen(true)
+    }
+  }, [])
+
   // Escuta o evento disparado pelo botão hamburger em qualquer página
   useEffect(() => {
     function handleSidebarOpen() {
