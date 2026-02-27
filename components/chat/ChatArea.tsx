@@ -39,7 +39,7 @@ export default function ChatArea({
   }, [messages, isLoading])
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col flex-1 overflow-hidden">
       <ChatHeader model={modelMeta} onMenuOpen={onMenuOpen} />
 
       <div
