@@ -33,7 +33,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: '#fff' }}>
+    <div className="flex overflow-hidden" style={{ background: '#fff', height: '100dvh' }}>
       <Sidebar
         activeModel={activeModel}
         onModelSelect={handleModelSelect}
