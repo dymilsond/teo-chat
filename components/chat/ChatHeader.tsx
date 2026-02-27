@@ -75,24 +75,6 @@ export default function ChatHeader({ model, onMenuOpen }: Props) {
         </div>
       </div>
 
-      {/* Status */}
-      <div
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-        style={{
-          background: '#F5F6FA',
-          border: '1px solid #E0E3EC',
-          fontSize: 11, fontWeight: 600, color: '#6B6E7A',
-        }}
-      >
-        <span
-          style={{
-            width: 6, height: 6, borderRadius: '50%',
-            background: '#4caf50', display: 'inline-block',
-            animation: 'pulse-green 2s ease-in-out infinite',
-          }}
-        />
-        Ativo
-      </div>
     </header>
   )
 }
