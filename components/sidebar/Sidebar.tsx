@@ -52,6 +52,7 @@ export default function Sidebar({
           width: 'var(--sidebar-w)',
           background: 'var(--sidebar-bg)',
           borderRight: '1px solid var(--sidebar-border)',
+          overflow: 'hidden',
         }}
       >
         {/* Logo */}
@@ -122,8 +123,10 @@ export default function Sidebar({
           Histórico
         </div>
 
-        {/* Lista de conversas com scroll */}
-        <ConversationList conversations={conversations} loading={conversationsLoading} />
+        {/* Lista de conversas com scroll — wrapper garante que o footer nunca sai da tela */}
+        <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+          <ConversationList conversations={conversations} loading={conversationsLoading} />
+        </div>
 
         {/* Footer */}
         <div
