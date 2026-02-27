@@ -69,7 +69,7 @@ export default function ChatInput({ value, onChange, onSend, disabled }: Props) 
           className="flex-1 bg-transparent border-none outline-none resize-none overflow-y-auto"
           style={{
             minHeight: 24, maxHeight: 130,
-            fontSize: 13.5, lineHeight: 1.6,
+            fontSize: 16, lineHeight: 1.5,
             color: '#1a1a1a', fontFamily: 'inherit',
           }}
         />
